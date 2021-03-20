@@ -65,23 +65,43 @@ handleDecreaseQuantity=(product)=>{
    // console.log("decrease quantity of product=", product);
     const {products}=this.state;
     const index=products.indexOf(product);
-    // if(products[index].qty>0){
-    //     products[index].qty-=1;
-    // }
+    if(products[index].qty<=0){
+        return;
+    }
 
     // this.setState({
     //     products:products
     // })
+
+    const docRef=this.db.collection('products').doc(products[index].id);
+
+    docRef
+      .update({qty:products[index].qty-1})
+      .then(()=>{
+        console.log('document updated successfully');
+      })
+      .catch((err)=>{
+        console.log("error",err);
+      })
 }
 handleDeleteProduct=(id)=>{
     const {products}=this.state;
 
-    const items=products.filter((item)=>item.id!=id);
-    //this will return me an array of items whose id!=id passed in the function
+    // const items=products.filter((item)=>item.id!=id);
+    // //this will return me an array of items whose id!=id passed in the function
 
-    this.setState({
-        products:items
-    })
+    // this.setState({
+    //     products:items
+    // })
+
+    const docRef=this.db.collection('products').doc(id);
+
+    docRef
+      .delete()
+      .then(()=>{console.log("deleted successully")})
+      .catch((err)=>{
+        console.log("error",err);
+      })
 }
 
 getCartCount=()=>{
